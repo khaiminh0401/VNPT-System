@@ -1,5 +1,6 @@
 package com.example.auth_service.repositories;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,7 @@ import com.example.auth_service.entity.AdUser;
 
 @Repository
 public interface AdUserRepository extends JpaRepository<AdUser, UUID>{
+    Optional<AdUser> findByUsernameAndPassword(String username, String password);
 
+    Optional<AdUser> findByUsername(String username);
 }
