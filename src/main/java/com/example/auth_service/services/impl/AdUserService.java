@@ -3,6 +3,7 @@ package com.example.auth_service.services.impl;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.auth_service.core.BaseResponse;
@@ -27,15 +28,21 @@ public class AdUserService implements IAdUserService{
 
 	@Override
 	public BaseResponse<String> login(LoginRequest request) {
-		// TODO Auto-generated method stub
-		System.out.println("Login attempt with username: " + request.username);
-		System.out.println("Login attempt with password: " + request.password);
-		var adUser = adUserRepository.findByUsernameAndPassword(request.username, request.password);
-		if (adUser.isPresent()) {
-			return BaseResponse.success("Login successful");
-		} else {
-			return BaseResponse.error("Invalid username or password");
+		// Đăng nhập đã được xác thực ở controller bằng authenticationManager
+		return BaseResponse.success("Login successful");
+	}
+	@Override
+	public Optional<AdUser> findByUsername(String username) {
+        return adUserRepository.findByUsername(username);
+    }
+	
+	@Override
+	public void changePassword(String username, String newPassword, PasswordEncoder passwordEncoder) {
+		Optional<AdUser> userOpt = adUserRepository.findByUsername(username);
+		if (userOpt.isPresent()) {
+			AdUser user = userOpt.get();
+			user.password = passwordEncoder.encode(newPassword);
+			adUserRepository.save(user);
 		}
-		
 	}
 }
